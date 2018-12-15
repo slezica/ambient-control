@@ -25,7 +25,7 @@
 
         <service
                 android:name=".services.AmbientTileService"
-                android:icon="@android:drawable/ic_input_add"
+                android:icon="@drawable/ic_phonelink_setup_black_24dp"
                 android:label="Ambient"
                 android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
 

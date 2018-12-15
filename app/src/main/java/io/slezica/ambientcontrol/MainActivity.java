@@ -6,13 +6,13 @@ import android.widget.TextView;
 import io.slezica.ambientcontrol.ambient.Ambient;
 import io.slezica.ambientcontrol.ambient.AmbientImpl;
 import io.slezica.ambientcontrol.ambient.AmbientProvider;
+import io.slezica.ambientcontrol.utils.PowerUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private Ambient ambient;
 
-    private TextView permissionStateText;
-    private TextView ambientStateText;
+    private TextView explanation;
 
 
     @Override
@@ -22,27 +22,24 @@ public class MainActivity extends AppCompatActivity {
 
         ambient = AmbientProvider.getFor(this);
 
-        permissionStateText = (TextView) findViewById(R.id.permission_state);
-        ambientStateText = (TextView) findViewById(R.id.ambient_state);
+        explanation = (TextView) findViewById(R.id.explanation);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if (! ambient.isSupported()) {
-            permissionStateText.setText("Not supported by system");
-            ambientStateText.setText("");
-            return;
-        }
+        if (!ambient.isSupported()) {
+            explanation.setText(getString(R.string.not_supported));
 
-        if (ambient.hasPermissions()) {
-            permissionStateText.setText("Permissions granted");
-            ambientStateText.setText("Ambient always on: " + ambient.isAlwaysOn());
+        } else if (!ambient.hasPermissions()) {
+            explanation.setText(getString(R.string.no_permissions));
 
         } else {
-            permissionStateText.setText("Permissions not granted");
-            ambientStateText.setText("");
+            explanation.setText(getString(
+                    R.string.ambient_state,
+                    ambient.isAlwaysOn() ? "ON" : "OFF"
+            ));
         }
 
 
