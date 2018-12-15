@@ -1,16 +1,23 @@
 package io.slezica.ambientcontrol.ambient;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientMock implements Ambient {
 
+    private static final String PREFS = "AmbientMock";
+    private static final String PREF_ALWAYS_ON = "alwaysOn";
+
+
     private final TaggedLog log = new TaggedLog(this);
 
-    private boolean isAlwaysOn;
+    private SharedPreferences preferences;
 
     public AmbientMock(Context context) {
         log.d("Initialized with " + context.getClass().getSimpleName());
+
+        preferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -33,11 +40,12 @@ public class AmbientMock implements Ambient {
     @Override
     public void setAlwaysOn(boolean isAlwaysOn) {
         log.d("Setting alwaysOn to " + isAlwaysOn);
-        this.isAlwaysOn = isAlwaysOn;
+        preferences.edit().putBoolean(PREF_ALWAYS_ON, isAlwaysOn).commit();
     }
 
     @Override
     public boolean isAlwaysOn() {
+        final boolean isAlwaysOn = preferences.getBoolean(PREF_ALWAYS_ON, false);
         log.d("isAlwaysOn called, returning " + isAlwaysOn);
         return isAlwaysOn;
     }
