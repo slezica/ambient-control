@@ -3,7 +3,7 @@ package io.slezica.ambientcontrol;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-import io.slezica.ambientcontrol.utils.Ambient;
+import io.slezica.ambientcontrol.ambient.Ambient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
         ambient = new Ambient(this);
 
-        permissionStateText = findViewById(R.id.permission_state);
-        ambientStateText = findViewById(R.id.ambient_state);
+        permissionStateText = (TextView) findViewById(R.id.permission_state);
+        ambientStateText = (TextView) findViewById(R.id.ambient_state);
     }
 
     @Override
