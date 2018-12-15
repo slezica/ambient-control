@@ -1,4 +1,4 @@
-package io.slezica.ambientcontrol.utils;
+package io.slezica.ambientcontrol.ambient;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class Ambient {
 
@@ -27,7 +28,6 @@ public class Ambient {
                     .checkSelfPermission(context, Manifest.permission.WRITE_SECURE_SETTINGS);
 
             return (state == PackageManager.PERMISSION_GRANTED);
-
         } catch (Exception e) {
             return false;
         }

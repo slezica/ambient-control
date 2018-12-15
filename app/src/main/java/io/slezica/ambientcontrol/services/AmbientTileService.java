@@ -2,7 +2,7 @@ package io.slezica.ambientcontrol.services;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import io.slezica.ambientcontrol.utils.Ambient;
+import io.slezica.ambientcontrol.ambient.Ambient;
 
 public class AmbientTileService extends TileService {
 
