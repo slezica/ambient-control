@@ -3,6 +3,7 @@ package io.slezica.ambientcontrol.services;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import io.slezica.ambientcontrol.ambient.Ambient;
+import io.slezica.ambientcontrol.ambient.AmbientImpl;
 
 public class AmbientTileService extends TileService {
 
@@ -11,7 +12,7 @@ public class AmbientTileService extends TileService {
     @Override
     public void onCreate() {
         super.onCreate();
-        ambient = new Ambient(this);
+        ambient = new AmbientImpl(this);
     }
 
     @Override

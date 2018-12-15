@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import io.slezica.ambientcontrol.ambient.Ambient;
+import io.slezica.ambientcontrol.ambient.AmbientImpl;
+import io.slezica.ambientcontrol.ambient.AmbientProvider;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ambient = new Ambient(this);
+        ambient = AmbientProvider.getFor(this);
 
         permissionStateText = (TextView) findViewById(R.id.permission_state);
         ambientStateText = (TextView) findViewById(R.id.ambient_state);
