@@ -8,6 +8,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import io.slezica.ambientcontrol.ambient.Ambient;
 import io.slezica.ambientcontrol.ambient.AmbientProvider;
+import io.slezica.ambientcontrol.utils.PowerUtils;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class PowerStateReceiver extends BroadcastReceiver {
@@ -18,6 +19,7 @@ public class PowerStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent powerIntent) {
         ambient = AmbientProvider.getFor(context);
+        PowerUtils.requestIgnoreBatteryOptimizations(context);
 
         if (!ambient.isSupported() || !ambient.hasPermissions()) {
             log.d("Ambient is not supported, or we have no permissions");
