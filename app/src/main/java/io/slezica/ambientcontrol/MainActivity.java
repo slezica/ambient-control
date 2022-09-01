@@ -1,19 +1,19 @@
 package io.slezica.ambientcontrol;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import io.slezica.ambientcontrol.ambient.Ambient;
-import io.slezica.ambientcontrol.ambient.AmbientImpl;
 import io.slezica.ambientcontrol.ambient.AmbientProvider;
-import io.slezica.ambientcontrol.utils.PowerUtils;
+import io.slezica.ambientcontrol.inspection.SettingsReader;
 
 public class MainActivity extends AppCompatActivity {
 
     private Ambient ambient;
-
     private TextView explanation;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,18 @@ public class MainActivity extends AppCompatActivity {
         ambient = AmbientProvider.getFor(this);
 
         explanation = (TextView) findViewById(R.id.explanation);
+
+        // Only for development, as Android changes how settings are managed:
+        // startWatchingSettingChanges();
+    }
+
+    private void startWatchingSettingChanges() {
+        new SettingsReader(getContentResolver()).startWatchingChanges(this::onSettingChange);
+    }
+
+    private Void onSettingChange(String name, String oldValue, String newValue) {
+        Log.d("SettingsReader", "Settings: " + name + " changed from '" + oldValue + "' to '" + newValue + "'");
+        return null;
     }
 
     @Override
@@ -41,7 +53,5 @@ public class MainActivity extends AppCompatActivity {
                     ambient.isAlwaysOn() ? "ON" : "OFF"
             ));
         }
-
-
     }
 }
