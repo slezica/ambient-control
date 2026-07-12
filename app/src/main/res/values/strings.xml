@@ -4,7 +4,9 @@
     <string name="not_supported">Ambient display is not supported by this device</string>
 
     <string name="no_permissions">
-        Ambient Control is missing the WRITE_SECURE_SETTINGS permission.
+        Ambient Control is missing the permission to modify settings.
+        \n\nOn Samsung devices, allow \"Modify system settings\" for this app.
+        \n\nOn other devices, grant WRITE_SECURE_SETTINGS through ADB (see README).
     </string>
 
     <string name="ambient_state">Ambient display alwaysOn mode is %s</string>

@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Ambient ambient;
     private TextView explanation;
+    private boolean permissionsRequested = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (!ambient.hasPermissions()) {
             explanation.setText(getString(R.string.no_permissions));
+
+            if (!permissionsRequested) {
+                permissionsRequested = true;
+                ambient.requestPermissions();
+            }
 
         } else {
             explanation.setText(getString(

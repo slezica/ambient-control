@@ -9,9 +9,14 @@ public class AmbientProvider {
     public static Ambient getFor(Context context) {
         if (DEBUG) {
             return new AmbientMock(context);
-        } else {
-            return new AmbientDefault(context);
         }
+
+        Ambient samsung = new AmbientSamsung(context);
+        if (samsung.isSupported()) {
+            return samsung;
+        }
+
+        return new AmbientDefault(context);
     }
 
 }
