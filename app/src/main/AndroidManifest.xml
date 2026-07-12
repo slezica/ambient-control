@@ -11,6 +11,8 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
@@ -46,7 +48,12 @@
             android:name=".services.AmbientControlService"
             android:exported="true"
             android:stopWithTask="false"
-            />
+            android:foregroundServiceType="specialUse">
+
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Toggles Always On Display while the device is charging"/>
+        </service>
 
     </application>
 </manifest>
