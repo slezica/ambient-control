@@ -10,7 +10,7 @@ public class AmbientProvider {
         if (DEBUG) {
             return new AmbientMock(context);
         } else {
-            return new AmbientImpl(context);
+            return new AmbientDefault(context);
         }
     }
 

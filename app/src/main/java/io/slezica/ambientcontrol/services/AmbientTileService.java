@@ -3,7 +3,6 @@ package io.slezica.ambientcontrol.services;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import io.slezica.ambientcontrol.ambient.Ambient;
-import io.slezica.ambientcontrol.ambient.AmbientImpl;
 import io.slezica.ambientcontrol.ambient.AmbientProvider;
 import io.slezica.ambientcontrol.utils.PowerUtils;
 

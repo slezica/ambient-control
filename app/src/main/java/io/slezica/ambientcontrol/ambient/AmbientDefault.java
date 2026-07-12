@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
-public class AmbientImpl implements Ambient {
+public class AmbientDefault implements Ambient {
 
     private final TaggedLog log = new TaggedLog(this);
 
@@ -19,7 +19,7 @@ public class AmbientImpl implements Ambient {
 
     private Context context;
 
-    public AmbientImpl(Context context) {
+    public AmbientDefault(Context context) {
         this.context = context;
     }
 
