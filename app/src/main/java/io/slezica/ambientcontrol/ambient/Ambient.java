@@ -1,6 +1,10 @@
 package io.slezica.ambientcontrol.ambient;
 
+import java.util.List;
+
 public interface Ambient {
+
+    List<StatusItem> getStatus();
 
     boolean hasPermissions();
 

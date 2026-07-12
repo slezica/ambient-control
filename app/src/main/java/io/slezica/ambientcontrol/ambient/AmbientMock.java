@@ -2,6 +2,10 @@ package io.slezica.ambientcontrol.ambient;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import java.util.Arrays;
+import java.util.List;
+
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientMock implements Ambient {
@@ -18,6 +22,17 @@ public class AmbientMock implements Ambient {
         log.d("Initialized with " + context.getClass().getSimpleName());
 
         preferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public List<StatusItem> getStatus() {
+        log.d("getStatus called");
+
+        return Arrays.asList(
+            StatusItem.ok("Permission", "Granted"),
+            StatusItem.neutral("Ambient display", isAlwaysOn() ? "On" : "Off"),
+            StatusItem.warn("Mock", "Active", "This is the mock backend; no settings are touched.", null)
+        );
     }
 
     @Override

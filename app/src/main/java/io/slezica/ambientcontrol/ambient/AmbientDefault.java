@@ -9,6 +9,10 @@ import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.slezica.ambientcontrol.utils.PowerUtils;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientDefault implements Ambient {
@@ -21,6 +25,48 @@ public class AmbientDefault implements Ambient {
 
     public AmbientDefault(Context context) {
         this.context = context;
+    }
+
+    @Override
+    public List<StatusItem> getStatus() {
+        List<StatusItem> items = new ArrayList<>();
+
+        if (!isSupported()) {
+            items.add(StatusItem.warn(
+                "Ambient display", "Not detected",
+                "This device does not expose the doze_always_on setting.",
+                null
+            ));
+            return items;
+        }
+
+        if (hasPermissions()) {
+            items.add(StatusItem.ok("Permission", "Granted"));
+        } else {
+            items.add(StatusItem.warn(
+                "Permission", "Missing",
+                "Grant WRITE_SECURE_SETTINGS through ADB:\n"
+                    + "adb shell pm grant io.slezica.ambientcontrol"
+                    + " android.permission.WRITE_SECURE_SETTINGS",
+                null
+            ));
+            return items;
+        }
+
+        boolean alwaysOn = isAlwaysOn();
+        boolean plugged = PowerUtils.isPlugged(context);
+
+        if (alwaysOn == plugged) {
+            items.add(StatusItem.ok("Ambient display", alwaysOn ? "On" : "Off"));
+        } else {
+            items.add(StatusItem.warn(
+                "Ambient display", alwaysOn ? "On" : "Off",
+                "Doesn't match the charger state. The background service may not be running.",
+                null
+            ));
+        }
+
+        return items;
     }
 
     @Override
