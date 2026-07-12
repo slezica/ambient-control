@@ -1,16 +1,16 @@
 # AmbientControl
 
-An Android application that automatically activates Ambient display when your phone is charging.
+An Android application that automatically activates Ambient/Always-On display while your phone is charging.
+
+> [!NOTE]
+> **AI Notice**
+> This project was updated for newer phones by Claude, in 2026
 
 ## Installation
 
 You have to build it and install it.
 
-There's no use in uploading this to the PlayStore, since it requires
-a permission you can only grant through ADB -- and if you're going to grant it, you might as well read the
-source code.
-
-It's no beauty (I think I even left some code half-written) and I don't intend to add any more features. If you find it useful, let me know, I may change my mind.
+This was never uploaded to the PlayStore, since on most devices it requires a permission you can only grant through ADB.
 
 ### Building
 
@@ -20,7 +20,7 @@ You'll need the Android SDK (compile SDK 33) and a device running Android 7.0 (A
 $ ./gradlew assembleDebug
 ```
 
-The APK ends up in `app/build/outputs/apk/debug/app-debug.apk`.
+The APK ends up in `app/build/outputs/apk/debug/app-debug.apk`. Since there's no PlayStore version, there's no signed release build either.
 
 ### Installing
 
@@ -36,7 +36,21 @@ Or install the APK directly:
 $ adb install app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Then grant the permission in question:
+Then grant the required permission (next section).
+
+
+### Granting permissions
+
+Permissions depend on the device.
+
+#### One UI (Samsumg 2026)
+
+Grant the "Modify System Settings" permission. It should be offered on first launch, and can be reached via System Settings manually under `Settings > Apps > Special app access`.
+
+#### Stock Android (Older Pixels and other AOSP devices)
+
+Ambient display is controlled by the `doze_always_on` secure setting, which requires a
+permission you can only grant through ADB:
 
 ```
 $ adb shell pm grant io.slezica.ambientcontrol android.permission.WRITE_SECURE_SETTINGS
