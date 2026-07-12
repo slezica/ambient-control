@@ -47,6 +47,8 @@ Permissions depend on the device.
 
 Grant the "Modify System Settings" permission. It should be offered on first launch, and can be reached via System Settings manually under `Settings > Apps > Special app access`.
 
+The _Always-On Display_ is toggled with charging state, **but the mode when enabled must be still set by you** (the intended is _Always_).
+
 #### Stock Android (Older Pixels and other AOSP devices)
 
 Ambient display is controlled by the `doze_always_on` secure setting, which requires a
