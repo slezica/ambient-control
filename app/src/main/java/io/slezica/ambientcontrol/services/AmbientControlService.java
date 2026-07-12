@@ -88,30 +88,39 @@ public class AmbientControlService extends Service {
     }
 
     private void checkPowerState() {
-        log.d("Received power Intent");
+        log.d("Checking initial power state");
 
+        final Bundle batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            .getExtras();
+
+        // Any non-zero flag (AC, USB, wireless, dock) counts as plugged:
+        final int pluggedFlags = batteryStatus.getInt(BatteryManager.EXTRA_PLUGGED, 0);
+
+        applyPowerState(pluggedFlags > 0);
+    }
+
+    private void applyPowerState(boolean plugged) {
         if (!ambient.isSupported() || !ambient.hasPermissions()) {
             log.d("Ambient is not supported, or we have no permissions");
             return;
         }
 
-        final Bundle batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            .getExtras();
+        log.d("Plugged: " + plugged);
 
-        final int pluggedFlags = batteryStatus.getInt(BatteryManager.EXTRA_PLUGGED, -1);
-
-        final boolean usbCharge = pluggedFlags == BatteryManager.BATTERY_PLUGGED_USB;
-        final boolean acCharge = pluggedFlags == BatteryManager.BATTERY_PLUGGED_AC;
-        final boolean wlCharge = pluggedFlags == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-
-        log.d("USB " + usbCharge + ", AC " + acCharge + ", WL " + wlCharge);
-        ambient.setAlwaysOn(usbCharge || acCharge || wlCharge);
+        try {
+            ambient.setAlwaysOn(plugged);
+        } catch (Exception e) {
+            // A rejected settings write must not crash-loop the sticky service:
+            log.d("Failed to apply power state: " + e);
+        }
     }
 
     public class PowerStateReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent powerIntent) {
-            checkPowerState();
+            // The sticky ACTION_BATTERY_CHANGED intent can lag behind this
+            // broadcast, so the action itself is the source of truth here:
+            applyPowerState(Intent.ACTION_POWER_CONNECTED.equals(powerIntent.getAction()));
         }
     }
 }
