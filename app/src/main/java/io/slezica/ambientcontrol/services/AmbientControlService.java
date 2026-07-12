@@ -66,7 +66,7 @@ public class AmbientControlService extends Service {
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setOngoing(true);
 
-        Intent intent = new Intent(this, AmbientControlService.class);
+        Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         builder.setContentIntent(pendingIntent);
 
