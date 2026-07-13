@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.slezica.ambientcontrol.utils.PowerUtils;
+import io.slezica.ambientcontrol.utils.Prefs;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientSamsung implements Ambient {
@@ -55,9 +56,9 @@ public class AmbientSamsung implements Ambient {
         }
 
         boolean alwaysOn = isAlwaysOn();
-        boolean plugged = PowerUtils.isPlugged(context);
+        boolean expected = PowerUtils.isPlugged(context) && Prefs.isEnabled(context);
 
-        if (alwaysOn == plugged) {
+        if (alwaysOn == expected) {
             items.add(StatusItem.ok("Always On Display", alwaysOn ? "On" : "Off"));
         } else {
             items.add(StatusItem.warn(

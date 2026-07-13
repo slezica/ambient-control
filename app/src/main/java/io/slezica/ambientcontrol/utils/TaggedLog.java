@@ -7,7 +7,9 @@ public class TaggedLog {
     private final String tag;
 
     public TaggedLog(Object any) {
-        this.tag = any.getClass().getSimpleName();
+        this.tag = (any instanceof Class)
+            ? ((Class<?>) any).getSimpleName()
+            : any.getClass().getSimpleName();
     }
 
     public void v(String message) {

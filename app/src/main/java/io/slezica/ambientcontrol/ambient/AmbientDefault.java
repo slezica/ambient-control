@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.slezica.ambientcontrol.utils.PowerUtils;
+import io.slezica.ambientcontrol.utils.Prefs;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientDefault implements Ambient {
@@ -54,9 +55,9 @@ public class AmbientDefault implements Ambient {
         }
 
         boolean alwaysOn = isAlwaysOn();
-        boolean plugged = PowerUtils.isPlugged(context);
+        boolean expected = PowerUtils.isPlugged(context) && Prefs.isEnabled(context);
 
-        if (alwaysOn == plugged) {
+        if (alwaysOn == expected) {
             items.add(StatusItem.ok("Ambient display", alwaysOn ? "On" : "Off"));
         } else {
             items.add(StatusItem.warn(

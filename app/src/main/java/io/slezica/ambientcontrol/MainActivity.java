@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import io.slezica.ambientcontrol.ambient.StatusItem;
 import io.slezica.ambientcontrol.inspection.SettingsReader;
 import io.slezica.ambientcontrol.services.AmbientControlService;
 import io.slezica.ambientcontrol.utils.PowerUtils;
+import io.slezica.ambientcontrol.utils.Prefs;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
         ambient = AmbientProvider.getFor(this);
         statusContainer = (LinearLayout) findViewById(R.id.status_container);
+
+        SwitchCompat enabledSwitch = findViewById(R.id.enabled_switch);
+        enabledSwitch.setChecked(Prefs.isEnabled(this));
+        enabledSwitch.setOnCheckedChangeListener((view, isChecked) -> {
+            Prefs.setEnabled(this, isChecked);
+            AmbientControlService.applyPowerState(this, PowerUtils.isPlugged(this));
+            renderStatus();
+        });
 
         startControlService();
 

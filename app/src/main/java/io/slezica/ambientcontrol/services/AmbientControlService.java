@@ -10,9 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ServiceInfo;
-import android.os.BatteryManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -22,6 +20,8 @@ import io.slezica.ambientcontrol.MainActivity;
 import io.slezica.ambientcontrol.R;
 import io.slezica.ambientcontrol.ambient.Ambient;
 import io.slezica.ambientcontrol.ambient.AmbientProvider;
+import io.slezica.ambientcontrol.utils.PowerUtils;
+import io.slezica.ambientcontrol.utils.Prefs;
 import io.slezica.ambientcontrol.utils.TaggedLog;
 
 public class AmbientControlService extends Service {
@@ -30,8 +30,9 @@ public class AmbientControlService extends Service {
     private static String NOTIFICATION_CHANNEL_NAME = "Ambient Control";
     private static String NOTIFICATION_TITLE = "Ambient Control";
 
-    private TaggedLog log = new TaggedLog(this);
-    private Ambient ambient;
+    private static final TaggedLog log = new TaggedLog(AmbientControlService.class);
+
+    private PowerStateReceiver receiver;
 
     @Nullable
     @Override
@@ -41,16 +42,17 @@ public class AmbientControlService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ambient = AmbientProvider.getFor(this);
-
-        IntentFilter filter = new IntentFilter();
-        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-        filter.addAction(Intent.ACTION_POWER_CONNECTED);
-        filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-
         checkPowerState();
 
-        registerReceiver(new PowerStateReceiver(), filter);
+        if (receiver == null) {
+            IntentFilter filter = new IntentFilter();
+            filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+            filter.addAction(Intent.ACTION_POWER_CONNECTED);
+            filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+
+            receiver = new PowerStateReceiver();
+            registerReceiver(receiver, filter);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             createNotificationChannel();
@@ -94,26 +96,23 @@ public class AmbientControlService extends Service {
 
     private void checkPowerState() {
         log.d("Checking initial power state");
-
-        final Bundle batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            .getExtras();
-
-        // Any non-zero flag (AC, USB, wireless, dock) counts as plugged:
-        final int pluggedFlags = batteryStatus.getInt(BatteryManager.EXTRA_PLUGGED, 0);
-
-        applyPowerState(pluggedFlags > 0);
+        applyPowerState(this, PowerUtils.isPlugged(this));
     }
 
-    private void applyPowerState(boolean plugged) {
+    // Also called synchronously from the UI, so a toggle takes effect before re-rendering:
+    public static void applyPowerState(Context context, boolean plugged) {
+        Ambient ambient = AmbientProvider.getFor(context);
+
         if (!ambient.isSupported() || !ambient.hasPermissions()) {
             log.d("Ambient is not supported, or we have no permissions");
             return;
         }
 
-        log.d("Plugged: " + plugged);
+        boolean enabled = Prefs.isEnabled(context);
+        log.d("Plugged: " + plugged + ", enabled: " + enabled);
 
         try {
-            ambient.setAlwaysOn(plugged);
+            ambient.setAlwaysOn(plugged && enabled);
         } catch (Exception e) {
             // A rejected settings write must not crash-loop the sticky service:
             log.d("Failed to apply power state: " + e);
@@ -125,7 +124,7 @@ public class AmbientControlService extends Service {
         public void onReceive(Context context, Intent powerIntent) {
             // The sticky ACTION_BATTERY_CHANGED intent can lag behind this
             // broadcast, so the action itself is the source of truth here:
-            applyPowerState(Intent.ACTION_POWER_CONNECTED.equals(powerIntent.getAction()));
+            applyPowerState(context, Intent.ACTION_POWER_CONNECTED.equals(powerIntent.getAction()));
         }
     }
 }
