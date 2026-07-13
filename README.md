@@ -5,8 +5,7 @@ An Android application that automatically activates Ambient/Always-On display wh
 <img src="screenshot.png" alt="Ambient Control status dashboard" width="320"/>
 
 > [!NOTE]
-> **AI Notice**
-> This project was updated for newer phones by Claude, in 2026
+> **AI Notice**: this project was updated for newer phones by Claude, in 2026
 
 ## Installation
 
